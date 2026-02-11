@@ -1,9 +1,10 @@
 "use server"
 import { NextRequest, NextResponse } from "next/server"
 import jwt from "jsonwebtoken"
-import { StanderedResponse } from "@/intefaces/apiResponses/standardResponse"
+import { StanderedResponse } from "@/interfaces/apiResponses/standardResponse"
 import { HttpStatusCode, HttpStatusText } from "./httpsStatusAndCode"
-import { TokenInterface } from "@/intefaces/token/tokenInterface"
+import { TokenInterface } from "@/interfaces/token/tokenInterface"
+import { cookies } from "next/headers"
 
 export const BadRequest  =async (message?:string )=> NextResponse.json<StanderedResponse>({
     success:false,
@@ -101,3 +102,5 @@ export const notFound =async (message?:string)=> NextResponse.json<StanderedResp
     error:HttpStatusText.NOT_FOUND,
     message: message || "not found"
 })
+
+export const cookieStore = async ()=> cookies()
