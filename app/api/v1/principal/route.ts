@@ -1,4 +1,5 @@
 import { mongodbConnect } from "@/lib/dataBase/mongoDb";
+import Principal from "@/models/principle";
 import { BadRequest, InternalServerIssue } from "@/utils/apiResponses/commonResponses";
 import { principalBodyValidation } from "@/validations/responseBody/principalValidations";
 import { NextRequest } from "next/server";
@@ -11,7 +12,7 @@ export async function POST(req:NextRequest) {
         // validating through zod 
         const isValidBody = principalBodyValidation.safeParse(body)
         // if validatioin failed
-        if(!isValidBody.error){
+        if(isValidBody.error){
             return BadRequest("Please provide valid body!")
         }
 
@@ -22,7 +23,14 @@ export async function POST(req:NextRequest) {
             return InternalServerIssue()
         }
 
-        
+        const principle = await Principal.create(body)
+
+
+        if(!principle){
+            return InternalServerIssue()
+        }
+
+        // const tokenPayload = 
     } catch (error) {
         console.log(error)
         return InternalServerIssue(error)
