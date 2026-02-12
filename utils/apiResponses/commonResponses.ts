@@ -101,6 +101,18 @@ export const notFound =async (message?:string)=> NextResponse.json<StanderedResp
     success:false,
     error:HttpStatusText.NOT_FOUND,
     message: message || "not found"
+},{
+    status:HttpStatusCode.NOT_FOUND
 })
+
+export const conflict =async (message?:string)=> NextResponse.json<StanderedResponse>({
+    status:HttpStatusCode.CONFLICT,
+    success:false,
+    error:HttpStatusText.CONFLICT,
+    message: message || "not found"
+},{
+    status:HttpStatusCode.CONFLICT
+})
+
 
 export const cookieStore = async ()=> cookies()
