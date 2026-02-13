@@ -64,11 +64,11 @@ export async function POST(req:NextRequest) :Promise<NextResponse> {
         }
 
         const tokenServices = await createToken(tokenPayload)
-
+        
         if(!tokenServices.isCreated || !tokenServices.token){
             return InternalServerIssue(new Error("failed to create token!"))
         }
-
+        console.log(tokenServices.token)
         const isSaved = await setToCookie(tokenServices.token  as string)
 
         if(!isSaved){
@@ -105,12 +105,11 @@ export async function PATCH(req:NextRequest):Promise<NextResponse> {
 
         // update body 
         const body = await req.json()
-
         // validation throught the zod 
         const isValidUpdateBody = principalPathValidation.safeParse(body)
 
-        if(!isValidUpdateBody.error){
-            return BadRequest("please provide valid data type of update value!")
+        if(isValidUpdateBody.error){
+            return BadRequest()
         }
         // connecting dabse4
         const isConnected = await mongodbConnect()
@@ -137,9 +136,8 @@ export async function PATCH(req:NextRequest):Promise<NextResponse> {
         const updatedPrncipleRecord = await Principal.findOneAndUpdate({
             _id:authenticationApi.user._id
         },{
-            body
-        })
-
+            ...body
+        }).lean().select(" _id")
         if(!updatedPrncipleRecord){
             return InternalServerIssue("Failed to update principle record!")
         }
