@@ -5,6 +5,7 @@ import { StanderedResponse } from "@/interfaces/apiResponses/standardResponse"
 import { HttpStatusCode, HttpStatusText } from "./httpsStatusAndCode"
 import { TokenInterface } from "@/interfaces/token/tokenInterface"
 import { cookies } from "next/headers"
+import { Role } from "@/types/role/roles"
 
 export const BadRequest  =async (message?:string )=> NextResponse.json<StanderedResponse>({
     success:false,
@@ -116,3 +117,15 @@ export const conflict =async (message?:string)=> NextResponse.json<StanderedResp
 
 
 export const cookieStore = async ()=> cookies()
+
+
+// role base forbiden
+export const roleCheck = async (token:TokenInterface, role:Role) :Promise<boolean>=> token.role === role
+
+export const forBidden = async (message?:string)=> NextResponse.json<StanderedResponse>({
+    status:HttpStatusCode.FORBIDDEN,
+    success:false,
+    message: message? message:"role didn't match!"
+},{
+    status:HttpStatusCode.FORBIDDEN
+})

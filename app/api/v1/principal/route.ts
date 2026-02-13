@@ -3,9 +3,10 @@ import { TokenInterface } from "@/interfaces/token/tokenInterface";
 import { mongodbConnect } from "@/lib/dataBase/mongoDb";
 import Principal from "@/models/principle";
 import { createToken, setToCookie } from "@/services/tokenServices/jwtTokenServices";
-import { BadRequest, conflict, InternalServerIssue } from "@/utils/apiResponses/commonResponses";
+import { BadRequest, conflict, forBidden, InternalServerIssue, notFound, roleCheck, Unauthorized, VerifyToken } from "@/utils/apiResponses/commonResponses";
 import { HttpStatusCode } from "@/utils/apiResponses/httpsStatusAndCode";
-import { principalBodyValidation } from "@/validations/responseBody/principalValidations";
+import { principalBodyValidation, principalPathValidation } from "@/validations/responseBody/principalValidations";
+import bcrypt from "bcryptjs";
 import { NextRequest ,NextResponse } from "next/server";
 
 export async function POST(req:NextRequest) :Promise<NextResponse> {
@@ -44,9 +45,13 @@ export async function POST(req:NextRequest) :Promise<NextResponse> {
         if(isExistWithPhoneNumber){
             return conflict("already register with this phone number!")
         }
-        const principle = await Principal.create(body)
 
+        // creating hash password
+        const hashedPassword = await bcrypt.hash(body.password, 10)
 
+        const principle = await Principal.create({...body, password:hashedPassword})
+
+    
         if(!principle){
             return InternalServerIssue()
         }
@@ -81,3 +86,70 @@ export async function POST(req:NextRequest) :Promise<NextResponse> {
     
 }
 
+/// patch api fo principaol inter
+export async function PATCH(req:NextRequest):Promise<NextResponse> {
+    try {
+        // upthenticatin apoi
+        const authenticationApi = await VerifyToken(req)
+
+        if(!authenticationApi.isVerified || !authenticationApi.user){
+            return Unauthorized()
+        }
+
+        /// if role is not a 
+        const isValidrole = await roleCheck(authenticationApi.user, "principal")
+
+        if(!isValidrole){
+            return forBidden("current role is didn't match!")
+        }
+
+        // update body 
+        const body = await req.json()
+
+        // validation throught the zod 
+        const isValidUpdateBody = principalPathValidation.safeParse(body)
+
+        if(!isValidUpdateBody.error){
+            return BadRequest("please provide valid data type of update value!")
+        }
+        // connecting dabse4
+        const isConnected = await mongodbConnect()
+
+        if(!isConnected){
+            return InternalServerIssue()
+        }
+
+        // findinig principal info
+        const principal = await Principal.findOne({
+            _id:authenticationApi.user._id
+        }).lean().select("_id")
+
+        if(!principal){
+            return notFound("principal record not found!")
+        }
+
+        //// when updating the password
+        if(body.password){
+            const newHashedPassword = await bcrypt.hash(body.password, 10)
+            body.password = newHashedPassword
+        }
+
+        const updatedPrncipleRecord = await Principal.findOneAndUpdate({
+            _id:authenticationApi.user._id
+        },{
+            body
+        })
+
+        if(!updatedPrncipleRecord){
+            return InternalServerIssue("Failed to update principle record!")
+        }
+
+        return NextResponse.json<StanderedResponse>({
+            status:HttpStatusCode.OK,
+            success:true,
+        })
+    } catch (error) {
+        console.log(error)
+        return InternalServerIssue(error)
+    }
+}
