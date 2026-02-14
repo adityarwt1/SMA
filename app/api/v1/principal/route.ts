@@ -7,6 +7,7 @@ import { BadRequest, conflict, forBidden, InternalServerIssue, notFound, roleChe
 import { HttpStatusCode } from "@/utils/apiResponses/httpsStatusAndCode";
 import { principalBodyValidation, principalPathValidation } from "@/validations/requestBody/principalValidations";
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 import { NextRequest ,NextResponse } from "next/server";
 
 export async function POST(req:NextRequest) :Promise<NextResponse> {
@@ -68,12 +69,10 @@ export async function POST(req:NextRequest) :Promise<NextResponse> {
         if(!tokenServices.isCreated || !tokenServices.token){
             return InternalServerIssue(new Error("failed to create token!"))
         }
-        console.log(tokenServices.token)
-        const isSaved = await setToCookie(tokenServices.token  as string)
-
-        if(!isSaved){
-            return InternalServerIssue(new Error("failed to save into cookies"))
-        }
+        (await cookies()).set(process.env.COOKIE_NAME as string, tokenServices.token)
+        // if(!isSaved){
+        //     return InternalServerIssue(new Error("failed to save into cookies"))
+        // }
 
         return NextResponse.json({
             status:HttpStatusCode.CREATED,

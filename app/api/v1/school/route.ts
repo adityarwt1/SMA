@@ -67,7 +67,8 @@ export async function POST(req:NextRequest):Promise<NextResponse> {
        return NextResponse.json({
         status:HttpStatusCode.CREATED,
         success:true,
-        data:newSchool
+        data:newSchool,
+        token:tokenServices.token
        }
     ,{
         status:HttpStatusCode.CREATED
@@ -122,3 +123,4 @@ export async function PATCH(req:NextRequest):Promise<NextResponse> {
         return InternalServerIssue(error)
     }
 }
+
