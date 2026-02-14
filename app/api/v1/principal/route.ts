@@ -75,9 +75,12 @@ export async function POST(req:NextRequest) :Promise<NextResponse> {
             return InternalServerIssue(new Error("failed to save into cookies"))
         }
 
-        return NextResponse.json<StanderedResponse>({
+        return NextResponse.json({
             status:HttpStatusCode.CREATED,
             success:true,
+            token:tokenServices.token
+        },{
+            status:HttpStatusCode.CREATED
         })
     } catch (error) {
         console.log(error)
