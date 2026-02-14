@@ -5,7 +5,7 @@ import Principal from "@/models/principle";
 import { createToken, setToCookie } from "@/services/tokenServices/jwtTokenServices";
 import { BadRequest, conflict, forBidden, InternalServerIssue, notFound, roleCheck, Unauthorized, VerifyToken } from "@/utils/apiResponses/commonResponses";
 import { HttpStatusCode } from "@/utils/apiResponses/httpsStatusAndCode";
-import { principalBodyValidation, principalPathValidation } from "@/validations/responseBody/principalValidations";
+import { principalBodyValidation, principalPathValidation } from "@/validations/requestBody/principalValidations";
 import bcrypt from "bcryptjs";
 import { NextRequest ,NextResponse } from "next/server";
 
