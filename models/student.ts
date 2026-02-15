@@ -24,6 +24,7 @@ export interface StudentDocumentInterface extends Document {
   pinCode: number,
   diseCode:number,
   email:string
+  currentClass:string | number
 }
 
 /* =========================
@@ -120,7 +121,10 @@ const StudentSchema: Schema<StudentDocumentInterface> = new Schema(
       type:String,
       required:true
     },
-
+    currentClass:{
+      type: Number || String , 
+      required:true
+    }
   },
   {
     timestamps: true,

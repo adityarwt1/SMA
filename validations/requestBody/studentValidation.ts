@@ -91,6 +91,9 @@ export const StudentRegisterSchemaZodSchema = z.object({
   password: z.string().min(6, {
     error: "Password must be least length of 6!",
   }),
+  currentClass:z.union([z.string(), z.number()],{
+    error:"Please provide valid datatype of currentClass."
+  })
 })
 
 /* =========================
