@@ -5,6 +5,7 @@ interface SubjectInterface extends Document {
 }
 
 interface TeacherDocumentInterface extends Document {
+    schoolId:mongoose.Types.ObjectId,
     fullName:string,
     email:string,
     password:string,
@@ -27,6 +28,10 @@ const SubjectSchema:Schema<SubjectInterface> = new Schema({
     }
 })
 const TeacherSchema:Schema<TeacherDocumentInterface> = new Schema({
+    schoolId:{
+        type:Schema.Types.ObjectId,
+        required:true
+    },
     fullName:{
         type:String,
         required:true
