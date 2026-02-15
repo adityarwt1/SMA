@@ -13,6 +13,7 @@ interface TeacherDocumentInterface extends Document {
     address:string,
     subjects:SubjectInterface[],
     contactNumber:number
+    bcCode:string
     isGuest:boolean
 }
 
@@ -47,6 +48,10 @@ const TeacherSchema:Schema<TeacherDocumentInterface> = new Schema({
         required:true
     },
     address:{
+        type:String,
+        required:true
+    },
+    bcCode:{
         type:String,
         required:true
     },

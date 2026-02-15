@@ -6,6 +6,7 @@ export const principalBodyValidation = z.object({
   email: z.email(),
   password: z.string().min(6),
   dp: z.string().optional(),
+  bcCode:z.string()
 });
 
 export const principalPathValidation = z.object({

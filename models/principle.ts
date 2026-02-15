@@ -6,6 +6,7 @@ interface PrincipalDocumentInteface extends Document {
     email:string,
     password:string
     dp:string,
+    bcCode:string
     schoolId:mongoose.Types.ObjectId
 }
 
@@ -19,6 +20,10 @@ const PrincipalSchema:Schema<PrincipalDocumentInteface> = new Schema({
         required:true,
     },
     email:{
+        type:String,
+        required:true
+    },
+    bcCode:{
         type:String,
         required:true
     },
