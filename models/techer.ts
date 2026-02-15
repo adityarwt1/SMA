@@ -1,8 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose'
-interface SubjectInterface extends Document {
-    subjectName:string,
-    teacherId:mongoose.Types.ObjectId,
-}
+
 
 interface TeacherDocumentInterface extends Document {
     schoolId:mongoose.Types.ObjectId,
@@ -12,21 +9,13 @@ interface TeacherDocumentInterface extends Document {
     dp:string,
     diseCode:number,
     address:string,
-    subjects:SubjectInterface[],
+    subjects:string[],
     contactNumber:number
     bcCode:string
     isGuest:boolean
 }
 
-const SubjectSchema:Schema<SubjectInterface> = new Schema({
-    subjectName:{
-        type:String
-    },
-    teacherId:{
-        type:Schema.Types.ObjectId,
-        required:true
-    }
-})
+
 const TeacherSchema:Schema<TeacherDocumentInterface> = new Schema({
     schoolId:{
         type:Schema.Types.ObjectId,
@@ -60,7 +49,10 @@ const TeacherSchema:Schema<TeacherDocumentInterface> = new Schema({
         type:String,
         required:true
     },
-    subjects:[SubjectSchema],
+    subjects:[{
+        type:String,
+        required:true
+    }],
     contactNumber:{
         type:Number,
         required:true

@@ -110,7 +110,7 @@ export async function PATCH(req:NextRequest):Promise<NextResponse> {
         // validation throught the zod 
         const isValidUpdateBody = principalPathValidation.safeParse(body)
 
-        if(isValidUpdateBody.error){
+        if(!isValidUpdateBody.success){
             return BadRequest()
         }
         // connecting dabse4

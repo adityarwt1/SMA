@@ -87,7 +87,7 @@ export async function POST(req:NextRequest):Promise<NextResponse> {
         return NextResponse.json({
             success:true,
             status:HttpStatusCode.CREATED,
-            token:tokenServices.token
+            token:tokenServices.token,
         },
     {
         status:HttpStatusCode.CREATED
@@ -110,10 +110,9 @@ export async function PATCH(req:NextRequest) :Promise<NextResponse> {
         }
         // tokenrole chekck
         const isValidRole = await roleCheck(apiAuthentication.user, "teacher")
-        if(isValidRole){
+        if(!isValidRole){
             return forBidden("You are not an teacher!")
         }
-
         // body validations
         const body = await req.json()
         if(!body){
@@ -125,7 +124,7 @@ export async function PATCH(req:NextRequest) :Promise<NextResponse> {
         if(!isValidBody.success){
             return BadRequest('please provide valid update data!')
         }
-
+    
         // databse connection test 
         const isConnected = await mongodbConnect()
 
@@ -150,8 +149,6 @@ export async function PATCH(req:NextRequest) :Promise<NextResponse> {
             _id:apiAuthentication.user._id
         },{
             ...body
-        },{
-            new:true
         })
         // if by change failed to update teacher data!
         if(!newUpdatedData){
