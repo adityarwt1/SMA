@@ -1,16 +1,31 @@
 import mongoose, { Document, Schema } from "mongoose"
 
-interface NoticeDocumentInterface extends Document {
+export interface NoticeAttachment {
+    fileName: string
+    fileUrl: string
+    fileType: string
+    fileSize: number
+}
+
+export interface NoticeDocumentInterface extends Document {
     schoolId: mongoose.Types.ObjectId
     postedBy: mongoose.Types.ObjectId
     postedByRole: "principal" | "teacher"
     topic: string
     description: string
     image?: string
+    attachments?: NoticeAttachment[]
     targetAudience: "school" | "students"
     targetClass?: string | number
     isActive: boolean
 }
+
+const NoticeAttachmentSchema: Schema<NoticeAttachment> = new Schema({
+    fileName: { type: String, required: true },
+    fileUrl: { type: String, required: true },
+    fileType: { type: String, required: true },
+    fileSize: { type: Number, required: true },
+}, { _id: false })
 
 const NoticeSchema: Schema<NoticeDocumentInterface> = new Schema({
     schoolId: {
@@ -40,6 +55,10 @@ const NoticeSchema: Schema<NoticeDocumentInterface> = new Schema({
         type: String,
         required: false,
     },
+    attachments: {
+        type: [NoticeAttachmentSchema],
+        default: [],
+    },
     targetAudience: {
         type: String,
         enum: ["school", "students"],
@@ -58,6 +77,9 @@ const NoticeSchema: Schema<NoticeDocumentInterface> = new Schema({
 }, {
     timestamps: true,
 })
+
+NoticeSchema.index({ schoolId: 1, createdAt: -1 })
+NoticeSchema.index({ schoolId: 1, targetAudience: 1, targetClass: 1 })
 
 const Notice = mongoose.models.Notice || mongoose.model<NoticeDocumentInterface>("Notice", NoticeSchema)
 
