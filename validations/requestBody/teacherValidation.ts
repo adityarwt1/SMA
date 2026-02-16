@@ -10,7 +10,8 @@ export const teacherRegisterValidation = z.object({
     subjects:z.array(z.string()),
     contactNumber:z.number(),
     isGuest:z.boolean(),
-    bcCode:z.string()
+    bcCode:z.string(),
+    classTeacherOf:z.union([z.string(), z.number()]).nullable().optional()
 })
 export const teacherUpdateValidation = z.object({
     fullName:z.string().optional(),
@@ -22,5 +23,6 @@ export const teacherUpdateValidation = z.object({
     subjects:z.array(z.string()).optional(),
     contactNumber:z.number().optional(),
     isGuest:z.boolean().optional(),
-    bcCode:z.string().optional()
+    bcCode:z.string().optional(),
+    classTeacherOf:z.union([z.string(), z.number()]).nullable().optional()
 })

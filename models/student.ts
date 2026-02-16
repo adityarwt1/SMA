@@ -13,6 +13,7 @@ interface DocumentsInterface {
 export interface StudentDocumentInterface extends Document {
   schoolId: mongoose.Types.ObjectId
   attendanceId: mongoose.Types.ObjectId
+  classTeacherId: mongoose.Types.ObjectId | null
   fullName: string
   contactNumber: number[]
   fatherName: string
@@ -124,6 +125,12 @@ const StudentSchema: Schema<StudentDocumentInterface> = new Schema(
     currentClass:{
       type: Number || String , 
       required:true
+    },
+    classTeacherId:{
+      type:Schema.Types.ObjectId,
+      ref:"Teacher",
+      required:false,
+      default:null
     }
   },
   {

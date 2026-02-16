@@ -13,6 +13,7 @@ interface TeacherDocumentInterface extends Document {
     contactNumber:number
     bcCode:string
     isGuest:boolean
+    classTeacherOf:string | number | null
 }
 
 
@@ -60,6 +61,11 @@ const TeacherSchema:Schema<TeacherDocumentInterface> = new Schema({
     isGuest:{
         type:Boolean,
         required:true
+    },
+    classTeacherOf:{
+        type:Schema.Types.Mixed,
+        required:false,
+        default:null
     }
 },{
     timestamps:true
